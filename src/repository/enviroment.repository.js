@@ -21,14 +21,15 @@ async function getDataByIdDB(id) {
 
 }
 async function createDataDB(label, category, priority) {
+
     const client = await pool.connect();
+    console.log(label, category, priority);
+    const sql = `INSERT INTO enviroment (label, category, priority) VALUES ($1,$2,$3) RETURNING *`
 
-    const sql = `SELECT * FROM enviroment WHERE id = $1`
-
-    const data = (await client.query(sql, [id])).rows
+    const data = (await client.query(sql, [label, category, priority])).rows;
 
     return data
 
 }
 
-module.exports = { getAllDataDB, getDataByIdDB, createDa }
+module.exports = { getAllDataDB, getDataByIdDB, createDataDB }

@@ -21,11 +21,11 @@ route.get(`/:id`, async (req, res) => {
     }
 })
 
-route.post(`/`, async (req, res) => {
-    try {
-        const { label, category, priority } = req.params;
-        const data = await getDataById(label, category, priority);
-        res.send(data)
+route.post(`/`, (req, res) => {
+    try {console.log(`+`);
+        const { label, category, priority } = req.body;
+        // const data = await createData(label, category, priority);
+        res.send(`ok`)
     } catch (error) {
         res.send(error.message)
     }
