@@ -1,33 +1,57 @@
 const express = require(`express`);
-const { getAllData, getDataById, createData } = require(`../service/enviroment.service`)
+const { getAllData, getDataById, createData, updateData, deleteDataById } = require(`../service/enviroment.service`);
+const { isValidId, isValidBody } = require(`../helper/validation`)
+const { buildResponse } = require(`../helper/buildResponse`)
 const route = express.Router();
 
 route.get(`/`, async (req, res) => {
     try {
         const data = await getAllData()
-        res.send(data)
+        buildResponse(res, 200, data)
     } catch (error) {
-        res.send(error.message)
+        buildResponse(res, 404, error.message)
     }
 })
 
-route.get(`/:id`, async (req, res) => {
+route.get(`/:id`, isValidId, async (req, res) => {
     try {
         const { id } = req.params;
         const data = await getDataById(id);
-        res.send(data)
+        buildResponse(res, 200, data)
     } catch (error) {
-        res.send(error.message)
+        buildResponse(res, 404, error.message)
     }
 })
 
-route.post(`/`, (req, res) => {
-    try {console.log(`+`);
+route.post(`/`, isValidBody, async (req, res) => {
+    try {
+        console.log(`+`);
         const { label, category, priority } = req.body;
-        // const data = await createData(label, category, priority);
-        res.send(`ok`)
+        const data = await createData(label, category, priority);
+        buildResponse(res, 200, data)
     } catch (error) {
-        res.send(error.message)
+        buildResponse(res, 404, error.message)
+    }
+});
+
+route.put(`/:id`, isValidId, isValidBody, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { label, category, priority } = req.body;
+        const data = await updateData(id, label, category, priority);
+        buildResponse(res, 200, data)
+    } catch (error) {
+        buildResponse(res, 404, error.message)
+    }
+})
+
+route.delete(`/:id`, isValidId, async (req, res) => {
+    try {
+        const { id } = req.params
+        const data = await deleteDataById(id)
+        buildResponse(res, 200, data)
+    } catch (error) {
+        buildResponse(res, 404, error.message)
     }
 })
 
